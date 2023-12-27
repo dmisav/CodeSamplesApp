@@ -5,7 +5,6 @@ namespace SampleCodeApp.Implemnetations.CustomDictionary;
 public class CustomDictionary<K,V>: ICustomDictionary<K,V>
 {
     private Hashtable ht = new Hashtable();
-
     public V this[K k]
     {
         get

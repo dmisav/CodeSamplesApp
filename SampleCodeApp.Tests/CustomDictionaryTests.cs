@@ -3,7 +3,7 @@ using SampleCodeApp.Implemnetations.CustomDictionary;
 
 namespace SampleCodeApp.Tests;
 
-public class sutTests
+public class CustomDictionaryTests
 {
     private ICustomDictionary<string, int> sut = new CustomDictionary<string, int>();
 
