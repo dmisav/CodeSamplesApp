@@ -1,6 +1,4 @@
-using SampleCodeApp.Implemnetations.Multimap;
-
-namespace SampleCodeApp.Examples;
+namespace SampleCodeApp.Implemnetations.Multimap;
 
 public class MultiMap<TKey, TValue> : IMultimap<TKey, TValue>
 {

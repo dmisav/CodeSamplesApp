@@ -1,4 +1,3 @@
-using SampleCodeApp.Examples;
 using SampleCodeApp.Implemnetations.Multimap;
 
 namespace SampleCodeApp.Tests;
@@ -17,7 +16,7 @@ public class MultiMapTests
     [Test]
     public void ShouldRetrieveValuesByKey()
     {
-        Assert.AreEqual(sut.GetValueForKey("C"), new List<int>{ 3 } );
+        Assert.AreEqual(sut.GetValueForKey("C"), new HashSet<int>{ 3 } );
     }
     
     [Test]
@@ -25,7 +24,7 @@ public class MultiMapTests
     {
         sut.Add("A", 1);
         sut.Add("A", 2);
-        Assert.That(new List<int>{ 1, 2 }, Is.EqualTo(sut.GetValueForKey("A")));
+        Assert.That(new HashSet<int>{ 1, 2 }, Is.EqualTo(sut.GetValueForKey("A")));
     }
     
            [Test]
