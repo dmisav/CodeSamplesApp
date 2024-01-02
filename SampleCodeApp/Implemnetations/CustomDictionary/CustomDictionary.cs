@@ -2,7 +2,7 @@ using System.Collections;
 
 namespace SampleCodeApp.Implemnetations.CustomDictionary;
 
-public class CustomDictionary<K,V>: ICustomDictionary<K,V>
+public class CustomDictionary<K,V>: ICustomDictionary<K,V>, IEnumerable
 {
     private Hashtable ht = new Hashtable();
     public V this[K k]
@@ -74,5 +74,10 @@ public class CustomDictionary<K,V>: ICustomDictionary<K,V>
     public Hashtable GetClonedHt()
     {
         return ht.Clone() as Hashtable;
+    }
+
+    public IEnumerator GetEnumerator()
+    {
+        throw new NotImplementedException();
     }
 }

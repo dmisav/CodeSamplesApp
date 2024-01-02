@@ -133,5 +133,89 @@ public class CustomDictionaryTests
         Assert.IsInstanceOf<Hashtable>(clonedHashtable);
         Assert.AreEqual(sut.ContainsKey(1), clonedHashtable.ContainsKey(1));
     }
+    
+    [Test]
+    public void TestExcept()
+    {
+        var dict1 = new CustomDictionary<string, int>
+        {
+            { "a", 1 },
+            { "b", 2 }
+        };
+        var dict2 = new CustomDictionary<string, int>
+        {
+            { "b", 2 },
+            { "c", 3 }
+        };
+
+        var result = dict1.Except(dict2);
+
+        Assert.IsTrue(result.ContainsKey("a"));
+        Assert.IsFalse(result.ContainsKey("b"));
+        Assert.IsFalse(result.ContainsKey("c"));
+    }
+
+    [Test]
+    public void TestIntersect()
+    {
+        var dict1 = new CustomDictionary<string, int>
+        {
+            { "a", 1 },
+            { "b", 2 }
+        };
+        var dict2 = new CustomDictionary<string, int>
+        {
+            { "b", 2 },
+            { "c", 3 }
+        };
+
+        var result = dict1.Intersect(dict2);
+
+        Assert.IsFalse(result.ContainsKey("a"));
+        Assert.IsTrue(result.ContainsKey("b"));
+        Assert.IsFalse(result.ContainsKey("c"));
+    }
+
+    [Test]
+    public void TestSymmetricExcept()
+    {
+        var dict1 = new CustomDictionary<string, int>
+        {
+            { "a", 1 },
+            { "b", 2 }
+        };
+        var dict2 = new CustomDictionary<string, int>
+        {
+            { "b", 2 },
+            { "c", 3 }
+        };
+
+        var result = dict1.SymmetricExcept(dict2);
+
+        Assert.IsTrue(result.ContainsKey("a"));
+        Assert.IsFalse(result.ContainsKey("b"));
+        Assert.IsTrue(result.ContainsKey("c"));
+    }
+
+    [Test]
+    public void TestUnion()
+    {
+        var dict1 = new CustomDictionary<string, int>
+        {
+            { "a", 1 },
+            { "b", 2 }
+        };
+        var dict2 = new CustomDictionary<string, int>
+        {
+            { "b", 2 },
+            { "c", 3 }
+        };
+
+        var result = dict1.Union(dict2);
+
+        Assert.IsTrue(result.ContainsKey("a"));
+        Assert.IsTrue(result.ContainsKey("b"));
+        Assert.IsTrue(result.ContainsKey("c"));
+    }
 
 }
