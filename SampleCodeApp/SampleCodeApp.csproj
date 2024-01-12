@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <Compile Remove="Examples\weirdSolution.cs" />
+      <Compile Remove="Implemnetations\Usage.cs" />
     </ItemGroup>
 
 </Project>

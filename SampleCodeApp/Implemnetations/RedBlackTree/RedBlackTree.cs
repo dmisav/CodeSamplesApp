@@ -1,39 +1,35 @@
-using System;
-using System.Collections.Generic;
+namespace SampleCodeApp.Implemnetations.RedBlackTreeN;
 
-public class RedBlackTree<T> where T : IComparable
+public enum NodeColor { Red, Black }
+
+public class Node
 {
-    private enum NodeColor
+    public int Value { get; set; }
+    public Node Left { get; set; }
+    public Node Right { get; set; }
+    public Node Parent { get; set; }
+    public NodeColor Color { get; set; }
+
+    public Node(int value)
     {
-        Red,
-        Black
+        Value = value;
+        Left = null;
+        Right = null;
+        Parent = null;
+        Color = NodeColor.Red;
     }
+}
 
-    private class Node
-    {
-        public T Value;
-        public Node Left;
-        public Node Right;
-        public Node Parent;
-        public NodeColor Color;
-
-        public Node(T value)
-        {
-            Value = value;
-            Left = null;
-            Right = null;
-            Parent = null;
-            Color = NodeColor.Red; // New nodes are always red initially
-        }
-    }
-
+public class RedBlackTree
+{
     private Node root;
-/// <summary>
-/// The Insert method places a new node in the correct location,
-/// then calls FixInsertion to ensure the tree remains balanced.
-/// </summary>
-/// <param name="value"></param>
-    public void Insert(T value)
+
+    public RedBlackTree()
+    {
+        root = null;
+    }
+
+    public void Insert(int value)
     {
         Node newNode = new Node(value);
         if (root == null)
@@ -42,162 +38,193 @@ public class RedBlackTree<T> where T : IComparable
         }
         else
         {
-            Node node = root;
-            Node parent = null;
-            while (node != null)
-            {
-                parent = node;
-                node = newNode.Value.CompareTo(node.Value) < 0 ? node.Left : node.Right;
-            }
-
-            newNode.Parent = parent;
-            if (newNode.Value.CompareTo(parent.Value) < 0)
-            {
-                parent.Left = newNode;
-            }
-            else
-            {
-                parent.Right = newNode;
-            }
+            InsertNode(root, newNode);
         }
-
-        newNode.Color = NodeColor.Red;
         FixInsertion(newNode);
     }
-/// <summary>
-/// FixInsertion method adjusts the tree to maintain
-/// Red-Black Tree properties after each insertion.
-/// </summary>
-/// <param name="node"></param>
-    private void FixInsertion(Node node)
+
+    private void InsertNode(Node current, Node newNode)
     {
-        while (node != root && node.Parent.Color == NodeColor.Red)
+        if (newNode.Value < current.Value)
         {
-            if (node.Parent == node.Parent.Parent.Left)
+            if (current.Left == null)
             {
-                Node uncle = node.Parent.Parent.Right;
-                if (uncle != null && uncle.Color == NodeColor.Red)
-                {
-                    node.Parent.Color = NodeColor.Black;
-                    uncle.Color = NodeColor.Black;
-                    node.Parent.Parent.Color = NodeColor.Red;
-                    node = node.Parent.Parent;
-                }
-                else
-                {
-                    if (node == node.Parent.Right)
-                    {
-                        node = node.Parent;
-                        RotateLeft(node);
-                    }
-                    node.Parent.Color = NodeColor.Black;
-                    node.Parent.Parent.Color = NodeColor.Red;
-                    RotateRight(node.Parent.Parent);
-                }
+                current.Left = newNode;
+                newNode.Parent = current;
             }
             else
             {
-                Node uncle = node.Parent.Parent.Left;
+                InsertNode(current.Left, newNode);
+            }
+        }
+        else
+        {
+            if (current.Right == null)
+            {
+                current.Right = newNode;
+                newNode.Parent = current;
+            }
+            else
+            {
+                InsertNode(current.Right, newNode);
+            }
+        }
+    }
+
+    private void FixInsertion(Node node)
+    {
+        Node parent = null;
+        Node grandparent = null;
+
+        while (node != root && node.Color != NodeColor.Black && node.Parent.Color == NodeColor.Red)
+        {
+            parent = node.Parent;
+            grandparent = node.Parent.Parent;
+
+            // Case : Parent is left child of Grand-parent
+            if (parent == grandparent.Left)
+            {
+                Node uncle = grandparent.Right;
+
+                // Case : Uncle is red, only recoloring required
                 if (uncle != null && uncle.Color == NodeColor.Red)
                 {
-                    node.Parent.Color = NodeColor.Black;
+                    grandparent.Color = NodeColor.Red;
+                    parent.Color = NodeColor.Black;
                     uncle.Color = NodeColor.Black;
-                    node.Parent.Parent.Color = NodeColor.Red;
-                    node = node.Parent.Parent;
+                    node = grandparent;
                 }
                 else
                 {
-                    if (node == node.Parent.Left)
+                    // Left-Right (LR) case
+                    if (node == parent.Right)
                     {
-                        node = node.Parent;
-                        RotateRight(node);
+                        RotateLeft(parent);
+                        node = parent;
+                        parent = node.Parent;
                     }
-                    node.Parent.Color = NodeColor.Black;
-                    node.Parent.Parent.Color = NodeColor.Red;
-                    RotateLeft(node.Parent.Parent);
+
+                    // Left-Left (LL) case
+                    RotateRight(grandparent);
+                    SwapColors(parent, grandparent);
+                    node = parent;
+                }
+            }
+            // Case : Parent is right child of Grand-parent
+            else
+            {
+                Node uncle = grandparent.Left;
+
+                // Case : Uncle is red, only recoloring required
+                if (uncle != null && uncle.Color == NodeColor.Red)
+                {
+                    grandparent.Color = NodeColor.Red;
+                    parent.Color = NodeColor.Black;
+                    uncle.Color = NodeColor.Black;
+                    node = grandparent;
+                }
+                else
+                {
+                    // Right-Left (RL) case
+                    if (node == parent.Left)
+                    {
+                        RotateRight(parent);
+                        node = parent;
+                        parent = node.Parent;
+                    }
+
+                    // Right-Right (RR) case
+                    RotateLeft(grandparent);
+                    SwapColors(parent, grandparent);
+                    node = parent;
                 }
             }
         }
         root.Color = NodeColor.Black;
     }
-/// <summary>
-/// RotateLeft and RotateRight are utility
-/// methods to perform left and right rotations.
-/// </summary>
-/// <param name="node"></param>
+
     private void RotateLeft(Node node)
     {
-        Node right = node.Right;
-        node.Right = right.Left;
-        if (right.Left != null)
+        Node rightNode = node.Right;
+        node.Right = rightNode.Left;
+
+        if (node.Right != null)
         {
-            right.Left.Parent = node;
+            node.Right.Parent = node;
         }
-        right.Parent = node.Parent;
+
+        rightNode.Parent = node.Parent;
+
         if (node.Parent == null)
         {
-            root = right;
+            root = rightNode;
         }
         else if (node == node.Parent.Left)
         {
-            node.Parent.Left = right;
+            node.Parent.Left = rightNode;
         }
         else
         {
-            node.Parent.Right = right;
+            node.Parent.Right = rightNode;
         }
-        right.Left = node;
-        node.Parent = right;
+
+        rightNode.Left = node;
+        node.Parent = rightNode;
     }
-/// <summary>
-/// RotateLeft and RotateRight are utility
-/// methods to perform left and right rotations.
-/// </summary>
-/// <param name="node"></param>
+
     private void RotateRight(Node node)
     {
-        Node left = node.Left;
-        node.Left = left.Right;
-        if (left.Right != null)
+        Node leftNode = node.Left;
+        node.Left = leftNode.Right;
+
+        if (node.Left != null)
         {
-            left.Right.Parent = node;
+            node.Left.Parent = node;
         }
-        left.Parent = node.Parent;
+
+        leftNode.Parent = node.Parent;
+
         if (node.Parent == null)
         {
-            root = left;
+            root = leftNode;
         }
         else if (node == node.Parent.Right)
         {
-            node.Parent.Right = left;
+            node.Parent.Right = leftNode;
         }
         else
         {
-            node.Parent.Left = left;
+            node.Parent.Left = leftNode;
         }
-        left.Right = node;
-        node.Parent = left;
+
+        leftNode.Right = node;
+        node.Parent = leftNode;
     }
 
-    public List<T> InOrderTraversal()
+    private void SwapColors(Node node1, Node node2)
     {
-        var result = new List<T>();
-        InOrderTraversal(root, result);
-        return result;
+        NodeColor temp = node1.Color;
+        node1.Color = node2.Color;
+        node2.Color = temp;
     }
-/// <summary>
-/// The InOrderTraversal method is used to retrieve elements in sorted order.
-/// </summary>
-/// <param name="node"></param>
-/// <param name="result"></param>
-    private void InOrderTraversal(Node node, List<T> result)
+
+    public List<int> InOrderTraversal()
+    {
+        List<int> sortedList = new List<int>();
+        InOrderTraversalHelper(root, sortedList);
+        return sortedList;
+    }
+
+    private void InOrderTraversalHelper(Node node, List<int> result)
     {
         if (node != null)
         {
-            InOrderTraversal(node.Left, result);
+            InOrderTraversalHelper(node.Left, result);
             result.Add(node.Value);
-            InOrderTraversal(node.Right, result);
+            InOrderTraversalHelper(node.Right, result);
         }
     }
+    
+    
 }
 

@@ -1,26 +1,27 @@
-namespace SampleCodeApp.Implemnetations.RedBlackTree;
+namespace SampleCodeApp.Implemnetations.RedBlackTreeN;
 
 public class UsageRedBlackTree
 {
-    /*
-     class Program
-       {
-       static void Main()
-       {
-       var tree = new RedBlackTree<int>();
-       
-       tree.Insert(5);
-       tree.Insert(3);
-       tree.Insert(8);
-       tree.Insert(1);
-       tree.Insert(4);
-       
-       var sortedElements = tree.InOrderTraversal();
-       foreach (var element in sortedElements)
-       {
-       Console.WriteLine(element);
-       }
-       }
-       }
-     */
+    public static void Run()
+    {
+        RedBlackTree tree = new RedBlackTree();
+
+        // Insert elements into the tree
+        tree.Insert(5);
+        tree.Insert(3);
+        tree.Insert(7);
+        tree.Insert(2);
+        tree.Insert(4);
+        tree.Insert(6);
+        tree.Insert(8);
+
+        // Retrieve elements in sorted order
+        List<int> sortedElements = tree.InOrderTraversal();
+
+        Console.WriteLine("Sorted Elements:");
+        foreach (int element in sortedElements)
+        {
+            Console.WriteLine(element);
+        }
+    }
 }
