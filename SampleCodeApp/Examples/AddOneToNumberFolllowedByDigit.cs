@@ -9,20 +9,23 @@ public class AddOneToNumberFolllowedByDigit
     {
     }
 
-    public static Int64 GetAddOneToNumberFolllowedByDigit(string val, int n, int m)
+    public static string GetAddOneToNumberFolllowedByDigit(string val)
     {
-        var arr = val.ToCharArray();
         var lst = new List<char>();
-        for (var j= n; j < val.Length; j++)
+        var clst = new List<char>();
+        for (var j= 0; j < val.Length; j++)
         {
-            
-            if (Char.IsDigit(arr[j]) )
+            if (Char.IsDigit(val[j]) )
             {
-                lst.Add(arr[j]);
+                lst.Add(val[j]);
+            }
+            else
+            {
+                clst.Add(val[j]);
             }
         }
-
-        var res = Int64.Parse(string.Join("",lst));
-        return res+1;
+        var ires = Int64.Parse(string.Join("",lst)) + 1;
+        var res = new string(clst.ToArray()) + ires.ToString();
+        return  res;
     }
 }
