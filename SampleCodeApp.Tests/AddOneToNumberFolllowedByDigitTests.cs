@@ -18,6 +18,14 @@ public class AddOneToNumberFolllowedByDigitTests
        var res = AddOneToNumberFolllowedByDigit.GetAddOneToNumberFolllowedByDigit("abcr123456");
        Assert.AreEqual(res,"abcr123457");
     }
+
+    [Test]
+    public void ShouldAddUsingRegex()
+    {
+        var res = AddOneToNumberFolllowedByDigit.GetAddOnRegex("abcd1234");
+        Assert.AreEqual(res, "abcd1235");
+    }
+
 }
 
 /*
