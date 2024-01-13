@@ -85,3 +85,8 @@ namespace SampleCodeApp.Implemnetations.MinNumberParkingSpots
    }
    
  */
+ 
+ /*
+  select movieid, round(avg(rating),1) as AverageRating from MovieRatings group by movieid order by AverageRating desc, movieid
+    limit 10
+ */
